@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Quote Generator</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 4rem auto; padding: 0 1rem; }
+    #quote { font-size: 1.25rem; min-height: 4rem; font-style: italic; }
+    #author { margin-top: 0.5rem; color: #555; }
+    button { margin-top: 1.5rem; padding: 0.6rem 1.2rem; font-size: 1rem; cursor: pointer; }
+    .error { color: #b00; }
+  </style>
+</head>
+<body>
+  <h1>Quote of the moment</h1>
+
+  <div id="quote">Loading…</div>
+  <div id="author"></div>
+
+  <button id="new-quote">New quote</button>
+
+  <script>
+    const quoteEl  = document.getElementById("quote");
+    const authorEl = document.getElementById("author");
+    const button   = document.getElementById("new-quote");
+
+    let lastQuote = null;
+
+    async function loadQuote() {
+      quoteEl.classList.remove("error");
+      quoteEl.textContent = "Loading…";
+      authorEl.textContent = "";
+
+      try {
+        let data;
+        for (let i = 0; i < 8; i++) {
+          const res = await fetch("/api/quote");
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          data = await res.json();
+          if (!lastQuote || data.quote !== lastQuote.quote) break;
+        }
+
+        lastQuote = data;
+        quoteEl.textContent = "“" + data.quote + "”";
+        authorEl.textContent = "— " + data.author;
+      } catch (err) {
+        quoteEl.classList.add("error");
+        quoteEl.textContent = "Failed to load quote: " + err.message;
+      }
+    }
+
+    button.addEventListener("click", loadQuote);
+    loadQuote(); 
+  </script>
+</body>
+</html>

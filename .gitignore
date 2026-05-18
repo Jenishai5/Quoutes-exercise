@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# Local quote data (created at runtime)
+backend/quotes.json
+quotes.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
