@@ -11,7 +11,10 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
-    ports:
-      - "8080:80"
+    # Coolify routes traffic to this container via its own proxy on port 80.
+    # For local dev, run `docker compose run --service-ports frontend` or temporarily
+    # add `ports: ["8080:80"]` here.
+    expose:
+      - "80"
 volumes:
   quotes-data:
